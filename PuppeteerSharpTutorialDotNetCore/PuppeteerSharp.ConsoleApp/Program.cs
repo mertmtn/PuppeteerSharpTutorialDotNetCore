@@ -8,8 +8,7 @@ namespace PuppeteerSharp.ConsoleApp
     {
         public static async Task Main(string[] args)
         {
-            await GetVideoUrlList("http://www.google.com", "Beşiktaş");
-            await LoginFacebook();
+            await GetVideoUrlList("https://www.google.com", "Beşiktaş"); 
             Console.ReadKey();
         }
         private static async Task GetVideoUrlList(string url, string searchWord)

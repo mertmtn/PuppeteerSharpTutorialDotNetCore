@@ -154,7 +154,7 @@ namespace PuppeteerSharp.Methods
             }
         }
 
-        public static async Task<PuppeteerResult> LoginFacebook(string username,string password)
+        public static async Task<PuppeteerResult> LoginFacebook(string username, string password)
         {
             using (var page = await OpenChromiumPage())
             {
@@ -206,16 +206,19 @@ namespace PuppeteerSharp.Methods
 
             var linkList = new List<string>();
             var isLastPage = (nexts == null);
-
+            var pageNumber = 1;
             while ((nexts != null) || !isLastPage)
             {
                 var jsSelectAllAnchors = @"Array.from(document.querySelectorAll('.g'))";
                 var urls = await page.EvaluateExpressionAsync<object[]>(jsSelectAllAnchors);
-
-                for (int i = 0; i < urls.Length; i++)
+                
+                if (urls != null)
                 {
-                    var query = $"document.querySelectorAll('.g')[{i}].getElementsByTagName('a')[0].href";
-                    linkList.Add(await page.EvaluateExpressionAsync<string>(query));
+                    for (int i = 0; i < urls.Length; i++)
+                    {
+                        var query = $"document.querySelectorAll('.g')[{i}].getElementsByTagName('a')[0].href";
+                        linkList.Add(await page.EvaluateExpressionAsync<string>(query));
+                    }
                 }
 
                 nexts = await page.EvaluateExpressionAsync<object>(next);
@@ -228,6 +231,7 @@ namespace PuppeteerSharp.Methods
 
                     await page.GoToAsync(nextHrefUrl, new NavigationOptions { WaitUntil = waitUntil });
                     nexts = await page.EvaluateExpressionAsync<object>(next);
+                    pageNumber++;
                 }
                 else
                 {
